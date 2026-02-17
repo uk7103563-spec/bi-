@@ -8,58 +8,370 @@
         content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.sheetjs.com https://unpkg.com 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' blob:; worker-src 'self' blob:;">
     <meta name="referrer" content="no-referrer">
     <title>Enterprise Strategic Intelligence Unit | v22.0 Business Intelligence Authority</title>
-
-    <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono&display=swap"
         rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #020617;
+            --bg-secondary: #0f172a;
+            --glass: rgba(15, 23, 42, 0.75);
+            --border: rgba(105, 50, 50, 0.1);
+            --accent-primary: #38bdf8;
+            --accent-secondary: #818cf8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text-main: #f1f5f9;
+            --text-muted: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        aside {
+            width: 330px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            gap: 16px;
+            height: 100vh;
+            overflow-y: auto;
+            flex-shrink: 0;
+            z-index: 50;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 16px rgba(56, 189, 248, 0.15);
+        }
+
+        .label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: var(--text-muted);
+            letter-spacing: 0.15em;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        input,
+        select {
+            width: 100%;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            outline: none;
+            margin-bottom: 4px;
+        }
+
+        .btn-activate {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
+            margin-top: 10px;
+        }
+
+        .btn-activate:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.05), transparent);
+        }
+
+        .header-bar {
+            padding: 24px 40px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 40;
+            flex-shrink: 0;
+        }
+
+        .content-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .page-view {
+            display: none;
+            flex-direction: column;
+            gap: 24px;
+            animation: slideUp 0.3s cubic-bezier(0, 0, 0.2, 1);
+        }
+
+        .page-view.active {
+            display: flex;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px;
+        }
+
+        .kpi-h {
+            font-size: 0.73rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            gap: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .kpi-v {
+            font-size: 1.875rem;
+            font-weight: 800;
+            margin-top: 8px;
+            color: var(--text-main);
+        }
+
+        .intel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .intel-card {
+            background: rgba(30, 31, 59, 0.3);
+            border-left: 4px solid var(--accent-primary);
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .intel-card.danger {
+            border-left-color: var(--danger);
+            background: rgba(239, 68, 68, 0.03);
+        }
+
+        .intel-card.success {
+            border-left-color: var(--success);
+        }
+
+        .intel-t {
+            font-weight: 800;
+            font-size: 1rem;
+            margin-bottom: 16px;
+            display: block;
+            color: var(--text-main);
+        }
+
+        .intel-l {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            list-style: none;
+        }
+
+        .intel-l li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 20px;
+            line-height: 1.5;
+        }
+
+        .intel-l li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent-primary);
+            font-weight: 900;
+        }
+
+        .report-panel {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.05), rgba(129, 140, 248, 0.05));
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
+            margin-top: 12px;
+        }
+
+        .report-title {
+            font-size: 1.25rem;
+            font-weight: 900;
+            margin-bottom: 16px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .report-body {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .terminal {
+            background: #000;
+            color: #10b981;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            line-height: 1.7;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        #idle-state {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        #loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .spin {
+            width: 44px;
+            height: 44px;
+            border: 4px solid var(--border);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: rot 0.6s linear infinite;
+        }
+
+        @keyframes rot {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        footer {
+            padding: 20px 40px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: var(--bg-primary);
+        }
+    </style>
 </head>
 
 <body>
-    <!-- SIDEBAR CONTROL UNIT -->
     <aside>
         <div class="logo-box" onclick="location.reload()" style="cursor: pointer;">
             <div class="logo-icon"><i data-lucide="brain-circuit" color="#fff" size="24"></i></div>
             <h1 style="font-size: 1.35rem; font-weight: 900; letter-spacing: -0.04em; color: white;">AI BI AGENT</h1>
         </div>
-
-        <div class="control">
-            <label class="label">Strategic Perspective</label>
+        <div class="control"><label class="label">Strategic Perspective</label>
             <select id="role" onchange="AppCore.handleRoleChange()">
                 <option value="analyst" selected>Strategic BI Analyst</option>
                 <option value="executive">Executive Viewer</option>
                 <option value="admin">System Authority [Locked]</option>
             </select>
         </div>
-
-        <div class="control">
-            <label class="label">Integrated Data Ingress</label>
-            <input type="file" id="file-drop" accept=".csv, .xlsx, .sql" multiple
-                onchange="AppCore.handleIngress(this)">
-        </div>
-
+        <div class="control"><label class="label">Integrated Data Ingress</label><input type="file" id="file-drop"
+                multiple onchange="AppCore.handleIngress(this)"></div>
         <div id="dataset-manifest" class="card"
             style="display: none; flex-direction: column; gap: 12px; margin-top: 10px; background: rgba(15, 23, 42, 0.4); border: 1px dashed var(--border);">
             <p class="label" style="font-size: 0.65rem; color: var(--accent-primary);">SYSTEM_AUTHORITY — DETERMINISTIC
                 EXECUTION</p>
             <div id="file-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
         </div>
-
-        <div class="control">
-            <label class="label">Coordinate Mapping (X)</label>
-            <select id="x-axis" onchange="AppCore.autoTrigger()"></select>
-        </div>
-
-        <div class="control">
-            <label class="label">Target Metric (Y)</label>
-            <select id="y-axis" onchange="AppCore.autoTrigger()"></select>
-        </div>
-
-        <div class="control">
-            <label class="label">Visual Synthesis</label>
+        <div class="control"><label class="label">Coordinate Mapping (X)</label><select id="x-axis"
+                onchange="AppCore.autoTrigger()"></select></div>
+        <div class="control"><label class="label">Target Metric (Y)</label><select id="y-axis"
+                onchange="AppCore.autoTrigger()"></select></div>
+        <div class="control"><label class="label">Visual Synthesis</label>
             <select id="graph" onchange="AppCore.autoTrigger()">
                 <option value="bar">Distribution Hierarchy</option>
                 <option value="line">Temporal Flow</option>
@@ -69,31 +381,15 @@
                 <option value="radar">Strategic Mesh</option>
             </select>
         </div>
-
-        <!-- DIRECTIVE 2: HIDDEN BACKGROUND CONTROLS -->
-        <div style="display: none;">
-            <select id="refresh-interval">
-                <option value="60000" selected>1m Background Sync</option>
-            </select>
-        </div>
-
-        <button class="btn-activate" onclick="AppCore.triggerAudit()">
-            <i data-lucide="zap" size="18"></i>
-            INITIATE BI ANALYSIS
-        </button>
-
+        <button class="btn-activate" onclick="AppCore.triggerAudit()"><i data-lucide="zap" size="18"></i> INITIATE BI
+            ANALYSIS</button>
         <div style="margin-top: auto; border-top: 1px solid var(--border); padding-top: 16px;">
             <p style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600;">ACTIVE_VERSION: 22.0_GOLD</p>
-            <p style="font-size: 0.7rem; color: var(--text-muted);" id="timer">Authority Secured</p>
             <div id="mem-indicator"
                 style="font-size: 0.6rem; color: var(--accent-primary); margin-top: 4px; display: none;">SYSTEM
-                AUTHORITY MEMORY BOUNDARY:
-                <span id="mem-val">0</span> MB
-            </div>
+                AUTHORITY MEMORY BOUNDARY: <span id="mem-val">0</span> MB</div>
         </div>
     </aside>
-
-    <!-- CONTENT UNIT -->
     <main>
         <header class="header-bar">
             <div>
@@ -105,35 +401,28 @@
                 style="background: rgba(56, 189, 248, 0.1); color: var(--accent-primary); padding: 8px 20px; border-radius: 99px; font-size: 0.75rem; font-weight: 800; border: 1px solid rgba(56,189,248,0.2);">
                 GOVERNANCE_ENCLAVE</div>
         </header>
-
         <div class="content-scroll">
-            <div id="idle-state">
-                <i data-lucide="brain-circuit" size="72" color="var(--border)"></i>
+            <div id="idle-state"><i data-lucide="brain-circuit" size="72" color="var(--border)"></i>
                 <div>
                     <h3 style="color: var(--text-main); font-size: 1.25rem;">Governance Authority Gateway Ready</h3>
                     <p style="margin-top: 8px;">Map strategic coordinates to activate v22.0 interpretation cycle.</p>
                 </div>
             </div>
-
             <div id="dashboard" class="page-view">
-                <!-- DIRECTIVE 3: REPORT-FIRST OUTPUT MODE -->
                 <div id="analyst-view" style="display: none; flex-direction: column; gap: 24px;">
                     <div class="report-panel" id="final-report-box"
                         style="border: 1px solid var(--accent-primary); background: rgba(15,23,42,0.8); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
                         <div class="report-title"
                             style="border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <i data-lucide="shield-check" color="var(--accent-primary)" size="22"></i>
-                                <span style="font-weight: 900; letter-spacing: 0.02em;">CERTIFIED STRATEGIC BI
-                                    ANALYSIS</span>
-                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;"><i data-lucide="shield-check"
+                                    color="var(--accent-primary)" size="22"></i><span
+                                    style="font-weight: 900; letter-spacing: 0.02em;">CERTIFIED STRATEGIC BI
+                                    ANALYSIS</span></div>
                             <button class="btn-activate" id="export-btn"
                                 style="margin: 0; padding: 10px 20px; background: var(--accent-secondary); font-size: 0.75rem;"
-                                onclick="AppCore.exportReport()">
-                                <i data-lucide="printer" size="14"></i> EXPORT TO PDF
-                            </button>
+                                onclick="AppCore.exportReport()"><i data-lucide="printer" size="14"></i> EXPORT TO
+                                PDF</button>
                         </div>
-
                         <div class="intel-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 30px;">
                             <div class="intel-card"><span class="intel-t">Operational State</span>
                                 <ul class="intel-l" id="audit-integrity"></ul>
@@ -145,43 +434,16 @@
                                 <ul class="intel-l" id="audit-upgrades"></ul>
                             </div>
                         </div>
-
                         <div class="report-body" id="report-text" style="padding: 10px;"></div>
                     </div>
                 </div>
-
-                <!-- KPI & CHART BECOME SECONDARY (Below Report or in Dashboard View) -->
                 <div class="kpi-row" id="kpi-out"></div>
-
                 <div class="card chart-panel">
                     <h3 id="chart-head"
                         style="margin-bottom: 24px; font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted); font-weight: 800; letter-spacing: 0.05em;">
                         Graphical Decision Evidence</h3>
-                    <div style="height: 440px; position: relative;">
-                        <div id="y-axis-label"
-                            style="position: absolute; left: -40px; top: 50%; transform: rotate(-90deg); font-size: 0.7rem; font-weight: 800; color: var(--accent-primary); text-transform: uppercase;">
-                        </div>
-                        <canvas id="canvas"></canvas>
-                        <div id="x-axis-label"
-                            style="text-align: center; margin-top: 10px; font-size: 0.7rem; font-weight: 800; color: var(--accent-primary); text-transform: uppercase;">
-                        </div>
-                    </div>
+                    <div style="height: 440px; position: relative;"><canvas id="canvas"></canvas></div>
                 </div>
-
-                <div id="executive-data-view" class="card"
-                    style="display: none; flex-direction: column; gap: 20px; overflow: hidden;">
-                    <h3
-                        style="font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted); font-weight: 800; display: flex; align-items: center; gap: 10px;">
-                        <i data-lucide="list-checks" size="18"></i> Authority Strategic Records
-                    </h3>
-                    <div
-                        style="overflow-x: auto; max-height: 500px; border-radius: 12px; border: 1px solid var(--border);">
-                        <table id="data-table"
-                            style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
-                        </table>
-                    </div>
-                </div>
-
                 <div id="admin-view" style="display: none; flex-direction: column; gap: 24px;">
                     <div class="intel-grid">
                         <div class="card"
@@ -189,71 +451,90 @@
                             <h3 class="label">🔍 Governance Observability Authority</h3>
                             <div
                                 style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 12px;">
-                                <div class="intel-card"><span class="intel-t">Analysis Status</span>
-                                    <div id="admin-readiness" style="font-weight: 800; color: var(--accent-primary);">
-                                        SECURE</div>
+                                <div class="intel-card"><span class="intel-t">Status</span>
+                                    <div id="admin-readiness">SECURE</div>
                                 </div>
                                 <div class="intel-card"><span class="intel-t">Coverage</span>
-                                    <div id="admin-comp" style="font-weight: 800; color: var(--accent-primary);">0%
-                                    </div>
+                                    <div id="admin-comp">0%</div>
                                 </div>
-                                <div class="intel-card"><span class="intel-t">Enclave Health</span>
-                                    <div id="admin-pulse" style="font-weight: 800; color: var(--success);">ACTIVE</div>
+                                <div class="intel-card"><span class="intel-t">Health</span>
+                                    <div id="admin-pulse">ACTIVE</div>
                                 </div>
-                                <div class="intel-card"><span class="intel-t">Map Lock</span>
-                                    <div id="admin-axis" style="font-weight: 800; color: var(--accent-secondary);">
-                                        LOCKED</div>
+                                <div class="intel-card"><span class="intel-t">Lock</span>
+                                    <div id="admin-axis">LOCKED</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="card"
-                            style="background: rgba(15, 23, 42, 0.4); border: 1px dashed var(--accent-primary);">
-                            <h3 class="label">🔄 System Audit</h3>
-                            <button class="btn-activate" style="width: 100%;" onclick="AppCore.triggerAudit()">INITIATE
-                                MANUAL AUDIT</button>
-                        </div>
-                        <div class="card"
-                            style="background: rgba(15, 23, 42, 0.4); border: 1px dashed var(--accent-secondary);">
-                            <h3 class="label">📂 Workspace Audit</h3>
-                            <button class="btn-activate" style="width: 100%; background: var(--accent-secondary);"
-                                onclick="AppCore.auditPersistence()">VALIDATE DATA ENCLAVE</button>
-                        </div>
-                        <div class="card" style="background: rgba(15, 23, 42, 0.4); border: 1px dashed var(--danger);">
-                            <h3 class="label">🔒 Emergency Authority</h3>
-                            <button class="btn-activate" style="width: 100%; background: var(--danger);"
-                                onclick="AppCore.lockSystem()">PURGE AUTHORITY SESSION</button>
-                        </div>
                     </div>
-                    <div id="storage-details" class="terminal"
-                        style="display: none; border-color: var(--accent-secondary);"></div>
-                    <h3 class="label">📜 Governance Trace Log</h3>
                     <div class="terminal" id="term"></div>
                 </div>
             </div>
         </div>
-
         <footer>
             <div>AUTHORITY: BI-STRATEGIC-GOLD | LOCATION: INDIA-HQ | ENCLAVE: v22.0</div>
-            <div id="status-chip" style="display: flex; align-items: center; gap: 8px;">
-                <span id="sync-dot"
-                    style="width: 8px; height: 8px; background: var(--text-muted); border-radius: 50%;"></span>
-                <span id="sync-text">SYSTEM_AUTHORITY_READY</span>
-            </div>
+            <div id="status-chip" style="display: flex; align-items: center; gap: 8px;"><span id="sync-dot"
+                    style="width: 8px; height: 8px; background: var(--text-muted); border-radius: 50%;"></span><span
+                    id="sync-text">SYSTEM_AUTHORITY_READY</span></div>
         </footer>
-
         <div id="loader">
             <div class="spin"></div>
             <p style="margin-top: 18px; font-weight: 700; color: white;">ANALYSIS RUNNING...</p>
         </div>
     </main>
+    <script>
+        // STANDALONE MODULES INTEGRATION
+        const PersistenceEngine = (() => {
+            const DB_NAME = 'BI_AGENTIC', STORES = { DATASETS: 'datasets', AUDITS: 'audits', CONFIG: 'config' }; let db = null;
+            async function init() { return new Promise((resolve, reject) => { const req = indexedDB.open(DB_NAME, 2); req.onupgradeneeded = e => { const d = e.target.result; Object.values(STORES).forEach(s => { if (!d.objectStoreNames.contains(s)) d.createObjectStore(s, { keyPath: s === 'DATASETS' ? 'id' : (s === 'AUDITS' ? 'timestamp' : 'key') }); }); }; req.onsuccess = e => { db = e.target.result; resolve(db); }; req.onerror = e => reject(e.target.error); }); }
+            return { init, saveDataset: async d => { if (!db) await init(); return new Promise((res, rej) => { const tx = db.transaction(STORES.DATASETS, 'readwrite'); tx.objectStore(STORES.DATASETS).put(d); tx.oncomplete = () => res(); }); }, getAllDatasets: async () => { if (!db) await init(); return new Promise(res => { const tx = db.transaction(STORES.DATASETS, 'readonly'); const r = tx.objectStore(STORES.DATASETS).getAll(); r.onsuccess = () => res(r.result); }); }, deleteDataset: async id => { if (!db) await init(); const tx = db.transaction(STORES.DATASETS, 'readwrite'); tx.objectStore(STORES.DATASETS).delete(id); }, saveAudit: async a => { if (!db) await init(); const tx = db.transaction(STORES.AUDITS, 'readwrite'); tx.objectStore(STORES.AUDITS).put(a); }, getAuditHistory: async () => { if (!db) await init(); return new Promise(res => { const tx = db.transaction(STORES.AUDITS, 'readonly'); const r = tx.objectStore(STORES.AUDITS).getAll(); r.onsuccess = () => res(r.result.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))); }); } };
+        })();
 
-    <!-- JS Modular Engine -->
-    <script src="persistence.engine.js"></script>
-    <script src="data.engine.js"></script>
-    <script src="reasoning.engine.js"></script>
-    <script src="ui.renderer.js"></script>
-    <script src="admin.console.js"></script>
-    <script src="app.core.js"></script>
+        const DataEngine = (() => {
+            let col = {}, master = [];
+            function disc(data) { if (!data.length) return { numerical: [], categorical: [] }; const h = Object.keys(data[0]), s = { numerical: [], categorical: [] }; h.forEach(k => { const sample = data.slice(0, 10).map(d => d[k]); if (sample.every(v => !isNaN(parseFloat(String(v).replace(/[^0-9.-]/g, ""))))) s.numerical.push(k); else s.categorical.push(k); }); return s; }
+            async function store(id, name, data) { const clean = data.map(r => { const c = {}; Object.keys(r).forEach(k => c[k.trim()] = String(r[k] || "").trim()); return c; }).filter(r => Object.values(r).some(v => v !== "")); if (!clean.length) return; const s = disc(clean); col[id] = { id, name, data: clean, headers: Object.keys(clean[0]), schema: s }; await PersistenceEngine.saveDataset(col[id]); }
+            return { parseFileGeneric: async (file, id) => { return new Promise((res, rej) => { if (file.name.endsWith('.xlsx')) { const r = new FileReader(); r.onload = e => { const wb = XLSX.read(e.target.result, { type: 'buffer' }); const ws = wb.Sheets[wb.SheetNames[0]]; store(id, file.name, XLSX.utils.sheet_to_json(ws)).then(res); }; r.readAsArrayBuffer(file); } else { Papa.parse(file, { header: true, complete: r => store(id, file.name, r.data).then(res) }); } }); }, loadHydratedCollection: async () => { const p = await PersistenceEngine.getAllDatasets(); p.forEach(ds => col[ds.id] = ds); return col; }, reconcileCollection: () => ({ totalRows: Object.values(col).reduce((a, b) => a + b.data.length, 0), sharedHeaders: Object.keys(col).length ? col[Object.keys(col)[0]].headers : [] }), prepareMasterData: () => { const ids = Object.keys(col); master = ids.length ? col[ids[ids.length - 1]].data : []; }, getCoordinateCandidates: () => { const ids = Object.keys(col); if (!ids.length) return { x: '', y: '' }; const ds = col[ids[ids.length - 1]]; return { x: ds.schema.categorical[0] || ds.headers[0], y: ds.schema.numerical[0] || ds.headers[1] }; }, getCollection: () => col, getMasterData: () => master, removeDataset: async id => { delete col[id]; await PersistenceEngine.deleteDataset(id); } };
+        })();
+
+        const ReasoningEngine = (() => {
+            let hist = []; const parse = v => parseFloat(String(v || "").replace(/[^0-9.-]/g, "")) || 0;
+            const logic = p => {
+                const { x, y, data } = p; const stats = { sum: data.reduce((a, b) => a + parse(b[y]), 0), count: data.length }; stats.mean = stats.sum / stats.count;
+                const freq = {}; data.forEach(d => { const k = String(d[x] || "N/A"); freq[k] = (freq[k] || 0) + parse(d[y]); });
+                const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]); const main = sorted[0] || ["N/A", 0];
+                return { timestamp: new Date().toISOString(), trackId: 'TRK_' + Math.random().toString(36).substr(2, 5).toUpperCase(), labels: { x, y }, statistics: { mean: stats.mean, max: main[1], sum: stats.sum, count: stats.count }, distributions: sorted, peaks: { point: main[0] }, biInterpretation: { operationalState: (main[1] / stats.sum > 0.5) ? "Concentrated" : "Balanced" }, advisory: [{ action: "MONITOR", context: "Baseline established." }], reportSections: [{ title: "Executive Overview", content: `System Authority identified ${stats.count} nodes. Dominant node [${main[0]}] controls ${(main[1] / stats.sum * 100).toFixed(1)}% of volume.` }] };
+            };
+            return { executeAnalysis: async (x, y, m, c, d) => { const r = logic({ x, y, data: d }); await PersistenceEngine.saveAudit(r); hist.unshift(r); return r; }, getHistory: async () => hist.length ? hist : await PersistenceEngine.getAuditHistory() };
+        })();
+
+        const UIRenderer = (() => {
+            let chart = null; const format = v => v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : (v >= 1e3 ? (v / 1e3).toFixed(1) + 'K' : v.toFixed(1));
+            return {
+                updateDatasetManifest: (col, onDel) => { const l = document.getElementById('file-list'); l.textContent = ''; Object.values(col).forEach(ds => { const it = document.createElement('div'); it.style.cssText = 'display:flex;justify-content:space-between;padding:5px;border:1px solid var(--border);border-radius:5px;margin-bottom:5px;'; it.innerHTML = `<span>${ds.name}</span><button onclick="(${onDel})('${ds.id}')" style="cursor:pointer">×</button>`; l.appendChild(it); }); document.getElementById('dataset-manifest').style.display = Object.keys(col).length ? 'flex' : 'none'; },
+                renderKPIs: (role, data, y) => { const out = document.getElementById('kpi-out'); out.textContent = ''; const stats = window.lastAnalysisResults?.statistics; if (!stats) return; const kpis = [['Magnitude', format(stats.sum)], ['Nodes', stats.count], ['Peak %', (stats.max / stats.sum * 100).toFixed(1) + '%']]; kpis.forEach(k => { const c = document.createElement('div'); c.className = 'card'; c.innerHTML = `<div class="kpi-h">${k[0]}</div><div class="kpi-v">${k[1]}</div>`; out.appendChild(c); }); },
+                renderChart: (type, x, y) => { if (chart) chart.destroy(); const r = window.lastAnalysisResults; if (!r) return; chart = new Chart(document.getElementById('canvas'), { type, data: { labels: r.distributions.slice(0, 10).map(i => i[0]), datasets: [{ label: y, data: r.distributions.slice(0, 10).map(i => i[1]), backgroundColor: '#38bdf8' }] }, options: { responsive: true, maintainAspectRatio: false } }); },
+                renderAnalysis: r => {
+                    const t = document.getElementById('report-text'); t.innerHTML = `<div style="background:rgba(56,189,248,0.1);padding:10px;border-radius:10px;border:1px solid var(--accent-primary);margin-bottom:20px;text-align:center;font-weight:800;color:var(--accent-primary);">2. SYSTEM AUTHORITY — DETERMINISTIC STATISTICS</div>`;
+                    const s = r.statistics; const grid = document.createElement('div'); grid.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:10px;'; grid.innerHTML = `<div><div class="label">Sum</div><div>${format(s.sum)}</div></div><div><div class="label">Mean</div><div>${format(s.mean)}</div></div><div><div class="label">Peak</div><div>${format(s.max)}</div></div>`; t.appendChild(grid);
+                    const head = document.createElement('div'); head.style.cssText = 'margin-top:20px;font-size:0.9rem;border-top:1px solid var(--border);padding-top:10px;'; head.innerHTML = `<strong>Interpretation:</strong> ${r.reportSections[0].content}`; t.appendChild(head);
+                    const lList = ['audit-integrity', 'audit-leaks', 'audit-upgrades']; document.getElementById(lList[0]).innerHTML = `<li>STATUS: ${r.biInterpretation.operationalState}</li>`; document.getElementById(lList[1]).innerHTML = `<li>RISK: Low</li>`; document.getElementById(lList[2]).innerHTML = `<li>ACTION: ${r.advisory[0].action}</li>`;
+                },
+                populateSelectors: (all, shared) => { const x = document.getElementById('x-axis'), y = document.getElementById('y-axis'); x.innerHTML = ''; y.innerHTML = ''; all.forEach(h => { const o = document.createElement('option'); o.value = h; o.textContent = h; x.appendChild(o.cloneNode(true)); y.appendChild(o); }); },
+                resetDashboard: () => { document.getElementById('idle-state').style.display = 'flex'; document.getElementById('dashboard').classList.remove('active'); }
+            };
+        })();
+
+        const AdminConsole = (() => {
+            return { logActivity: m => { const t = document.getElementById('term'); if (t) { const d = document.createElement('div'); d.textContent = `[${new Date().toLocaleTimeString()}] ${m.toUpperCase()}`; t.appendChild(d); t.scrollTop = t.scrollHeight; } }, verifyCertification: r => ({ certified: !!r, status: r ? "VERIFIED" : "PENDING" }) };
+        })();
+
+        const AppCore = (() => {
+            async function trigger(auto = false) { const x = document.getElementById('x-axis').value, y = document.getElementById('y-axis').value; DataEngine.prepareMasterData(); if (x && y && DataEngine.getMasterData().length) { AdminConsole.logActivity("Audit active"); const r = await ReasoningEngine.executeAnalysis(x, y); window.lastAnalysisResults = r; UIRenderer.renderAnalysis(r); finalize(true); } else finalize(false); }
+            function finalize(show) { document.getElementById('idle-state').style.display = show ? 'none' : 'flex'; document.getElementById('dashboard').classList.toggle('active', show); const role = document.getElementById('role').value; document.getElementById('analyst-view').style.display = (role === 'analyst' && show) ? 'flex' : 'none'; document.getElementById('admin-view').style.display = role === 'admin' ? 'flex' : 'none'; if (show) { UIRenderer.renderKPIs(); UIRenderer.renderChart(document.getElementById('graph').value); } }
+            return { init: async () => { lucide.createIcons(); await PersistenceEngine.init(); await DataEngine.loadHydratedCollection(); const h = await ReasoningEngine.getHistory(); if (h.length) { window.lastAnalysisResults = h[0]; trigger(true); } else trigger(false); }, handleIngress: async i => { for (const f of i.files) await DataEngine.parseFileGeneric(f, 'ds_' + Math.random().toString(36).substr(2, 5)); UIRenderer.populateSelectors(DataEngine.reconcileCollection().sharedHeaders, []); trigger(); }, handleRoleChange: () => finalize(!!window.lastAnalysisResults), autoTrigger: () => trigger(true), triggerAudit: () => trigger(), exportReport: () => { window.print(); }, lockSystem: () => window.location.href = "admin.html" };
+        })();
+        window.onload = AppCore.init;
+    </script>
 </body>
 
 </html>
