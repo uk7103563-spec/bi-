@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Gateway | Strategic Intelligence Unit</title>
+
+    <!-- External Assets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+
+    <style>
+        :root {
+            --bg-primary: #020617;
+            --bg-secondary: #0f172a;
+            --glass: rgba(15, 23, 42, 0.75);
+            --border: rgba(56, 189, 248, 0.1);
+            --accent-primary: #38bdf8;
+            --accent-secondary: #818cf8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text-main: #f1f5f9;
+            --text-muted: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-image:
+                radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(129, 140, 248, 0.05) 0%, transparent 40%);
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            background: var(--glass);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 18px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.2);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            margin-bottom: 8px;
+        }
+
+        p.subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+
+        .pin-input-container {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .pin-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .pin-dot.active {
+            background-color: var(--accent-primary);
+            border-color: var(--accent-primary);
+            transform: scale(1.2);
+            box-shadow: 0 0 10px var(--accent-primary);
+        }
+
+        .numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .num-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            padding: 18px;
+            border-radius: 16px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .num-btn:hover {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: var(--accent-primary);
+            transform: scale(1.05);
+        }
+
+        .num-btn:active {
+            transform: scale(0.95);
+        }
+
+        .num-btn.action {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .status-msg {
+            font-size: 0.85rem;
+            font-weight: 600;
+            min-height: 20px;
+            margin-top: 16px;
+            transition: color 0.3s;
+        }
+
+        .status-msg.error {
+            color: var(--danger);
+        }
+
+        .status-msg.success {
+            color: var(--success);
+        }
+
+        .secure-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border-radius: 99px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="auth-container">
+        <div class="logo-box">
+            <i data-lucide="shield-check" color="#fff" size="32"></i>
+        </div>
+        <h1>System Access</h1>
+        <p class="subtitle">Enter administrative security key to proceed</p>
+
+        <div class="pin-input-container" id="pin-display">
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+            <div class="pin-dot"></div>
+        </div>
+
+        <div class="numpad">
+            <button class="num-btn" onclick="addPin('1')">1</button>
+            <button class="num-btn" onclick="addPin('2')">2</button>
+            <button class="num-btn" onclick="addPin('3')">3</button>
+            <button class="num-btn" onclick="addPin('4')">4</button>
+            <button class="num-btn" onclick="addPin('5')">5</button>
+            <button class="num-btn" onclick="addPin('6')">6</button>
+            <button class="num-btn" onclick="addPin('7')">7</button>
+            <button class="num-btn" onclick="addPin('8')">8</button>
+            <button class="num-btn" onclick="addPin('9')">9</button>
+            <button class="num-btn action" onclick="clearPin()">CLEAR</button>
+            <button class="num-btn" onclick="addPin('0')">0</button>
+            <button class="num-btn action" onclick="backspace()">DEL</button>
+        </div>
+
+        <div id="status" class="status-msg"></div>
+
+        <div class="secure-badge">
+            <i data-lucide="lock" size="12"></i>
+            End-to-End Encrypted Session
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // In a real system, this would be validated on the server.
+        // For this UI demo, we'll use a local "master" pin.
+        const MASTER_PIN = "2026";
+        let currentPin = "";
+
+        function updateDisplay() {
+            const dots = document.querySelectorAll('.pin-dot');
+            dots.forEach((dot, index) => {
+                if (index < currentPin.length) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        function addPin(num) {
+            if (currentPin.length < 4) {
+                currentPin += num;
+                updateDisplay();
+
+                if (currentPin.length === 4) {
+                    validatePin();
+                }
+            }
+        }
+
+        function clearPin() {
+            currentPin = "";
+            updateDisplay();
+            const status = document.getElementById('status');
+            status.textContent = "";
+            status.className = "status-msg";
+        }
+
+        function backspace() {
+            currentPin = currentPin.slice(0, -1);
+            updateDisplay();
+        }
+
+        function validatePin() {
+            const status = document.getElementById('status');
+            if (currentPin === MASTER_PIN) {
+                status.textContent = "ACCESS GRANTED. AUTHORIZING...";
+                status.className = "status-msg success";
+
+                // Store auth state for the session
+                sessionStorage.setItem('admin_auth', 'true');
+                sessionStorage.setItem('auth_timestamp', Date.now());
+
+                setTimeout(() => {
+                    // Redirect back to index with admin role active or to a dedicated admin portal
+                    // Since the user asked for admin.html, maybe they want this to be the gateway
+                    // For now, let's redirect to index.html with a param
+                    window.location.href = "index.html?role=admin";
+                }, 1000);
+            } else {
+                status.textContent = "INVALID SECURITY KEY. ACCESS DENIED.";
+                status.className = "status-msg error";
+
+                // Shake effect
+                const container = document.querySelector('.auth-container');
+                container.style.animation = 'none';
+                container.offsetHeight; // trigger reflow
+                container.style.animation = 'shake 0.4s ease-in-out';
+
+                setTimeout(() => {
+                    clearPin();
+                    container.style.animation = 'none';
+                }, 1000);
+            }
+        }
+
+        // Add shake animation
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+
+</html>

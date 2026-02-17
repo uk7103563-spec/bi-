@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.sheetjs.com https://unpkg.com 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' blob:; worker-src 'self' blob:;">
+    <meta name="referrer" content="no-referrer">
+    <title>Enterprise Strategic Intelligence Unit | v22.0 Business Intelligence Authority</title>
+
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+</head>
+
+<body>
+    <!-- SIDEBAR CONTROL UNIT -->
+    <aside>
+        <div class="logo-box" onclick="location.reload()" style="cursor: pointer;">
+            <div class="logo-icon"><i data-lucide="brain-circuit" color="#fff" size="24"></i></div>
+            <h1 style="font-size: 1.35rem; font-weight: 900; letter-spacing: -0.04em; color: white;">AI BI AGENT</h1>
+        </div>
+
+        <div class="control">
+            <label class="label">Strategic Perspective</label>
+            <select id="role" onchange="AppCore.handleRoleChange()">
+                <option value="analyst" selected>Strategic BI Analyst</option>
+                <option value="executive">Executive Viewer</option>
+                <option value="admin">System Authority [Locked]</option>
+            </select>
+        </div>
+
+        <div class="control">
+            <label class="label">Integrated Data Ingress</label>
+            <input type="file" id="file-drop" accept=".csv, .xlsx, .sql" multiple
+                onchange="AppCore.handleIngress(this)">
+        </div>
+
+        <div id="dataset-manifest" class="card"
+            style="display: none; flex-direction: column; gap: 12px; margin-top: 10px; background: rgba(15, 23, 42, 0.4); border: 1px dashed var(--border);">
+            <p class="label" style="font-size: 0.65rem; color: var(--accent-primary);">SYSTEM_AUTHORITY — DETERMINISTIC
+                EXECUTION</p>
+            <div id="file-list" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        </div>
+
+        <div class="control">
+            <label class="label">Coordinate Mapping (X)</label>
+            <select id="x-axis" onchange="AppCore.autoTrigger()"></select>
+        </div>
+
+        <div class="control">
+            <label class="label">Target Metric (Y)</label>
+            <select id="y-axis" onchange="AppCore.autoTrigger()"></select>
+        </div>
+
+        <div class="control">
+            <label class="label">Visual Synthesis</label>
+            <select id="graph" onchange="AppCore.autoTrigger()">
+                <option value="bar">Distribution Hierarchy</option>
+                <option value="line">Temporal Flow</option>
+                <option value="doughnut">Concentration Matrix</option>
+                <option value="pie">Segment Intensity</option>
+                <option value="polarArea">Impact Radar</option>
+                <option value="radar">Strategic Mesh</option>
+            </select>
+        </div>
+
+        <!-- DIRECTIVE 2: HIDDEN BACKGROUND CONTROLS -->
+        <div style="display: none;">
+            <select id="refresh-interval">
+                <option value="60000" selected>1m Background Sync</option>
+            </select>
+        </div>
+
+        <button class="btn-activate" onclick="AppCore.triggerAudit()">
+            <i data-lucide="zap" size="18"></i>
+            INITIATE BI ANALYSIS
+        </button>
+
+        <div style="margin-top: auto; border-top: 1px solid var(--border); padding-top: 16px;">
+            <p style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600;">ACTIVE_VERSION: 22.0_GOLD</p>
+            <p style="font-size: 0.7rem; color: var(--text-muted);" id="timer">Authority Secured</p>
+            <div id="mem-indicator"
+                style="font-size: 0.6rem; color: var(--accent-primary); margin-top: 4px; display: none;">SYSTEM
+                AUTHORITY MEMORY BOUNDARY:
+                <span id="mem-val">0</span> MB
+            </div>
+        </div>
+    </aside>
+
+    <!-- CONTENT UNIT -->
+    <main>
+        <header class="header-bar">
+            <div>
+                <h2 id="view-title" style="font-size: 1.4rem; font-weight: 800; color: white;">Authority Standby</h2>
+                <p id="view-desc" style="font-size: 0.88rem; color: var(--text-muted);">Secure v22.0 Business
+                    Intelligence Authority active.</p>
+            </div>
+            <div
+                style="background: rgba(56, 189, 248, 0.1); color: var(--accent-primary); padding: 8px 20px; border-radius: 99px; font-size: 0.75rem; font-weight: 800; border: 1px solid rgba(56,189,248,0.2);">
+                GOVERNANCE_ENCLAVE</div>
+        </header>
+
+        <div class="content-scroll">
+            <div id="idle-state">
+                <i data-lucide="brain-circuit" size="72" color="var(--border)"></i>
+                <div>
+                    <h3 style="color: var(--text-main); font-size: 1.25rem;">Governance Authority Gateway Ready</h3>
+                    <p style="margin-top: 8px;">Map strategic coordinates to activate v22.0 interpretation cycle.</p>
+                </div>
+            </div>
+
+            <div id="dashboard" class="page-view">
+                <!-- DIRECTIVE 3: REPORT-FIRST OUTPUT MODE -->
+                <div id="analyst-view" style="display: none; flex-direction: column; gap: 24px;">
+                    <div class="report-panel" id="final-report-box"
+                        style="border: 1px solid var(--accent-primary); background: rgba(15,23,42,0.8); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+                        <div class="report-title"
+                            style="border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <i data-lucide="shield-check" color="var(--accent-primary)" size="22"></i>
+                                <span style="font-weight: 900; letter-spacing: 0.02em;">CERTIFIED STRATEGIC BI
+                                    ANALYSIS</span>
+                            </div>
+                            <button class="btn-activate" id="export-btn"
+                                style="margin: 0; padding: 10px 20px; background: var(--accent-secondary); font-size: 0.75rem;"
+                                onclick="AppCore.exportReport()">
+                                <i data-lucide="printer" size="14"></i> EXPORT TO PDF
+                            </button>
+                        </div>
+
+                        <div class="intel-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 30px;">
+                            <div class="intel-card"><span class="intel-t">Operational State</span>
+                                <ul class="intel-l" id="audit-integrity"></ul>
+                            </div>
+                            <div class="intel-card danger"><span class="intel-t">Impact & Risk Matrix</span>
+                                <ul class="intel-l" id="audit-leaks"></ul>
+                            </div>
+                            <div class="intel-card success"><span class="intel-t">Strategic Directions</span>
+                                <ul class="intel-l" id="audit-upgrades"></ul>
+                            </div>
+                        </div>
+
+                        <div class="report-body" id="report-text" style="padding: 10px;"></div>
+                    </div>
+                </div>
+
+                <!-- KPI & CHART BECOME SECONDARY (Below Report or in Dashboard View) -->
+                <div class="kpi-row" id="kpi-out"></div>
+
+                <div class="card chart-panel">
+                    <h3 id="chart-head"
+                        style="margin-bottom: 24px; font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted); font-weight: 800; letter-spacing: 0.05em;">
+                        Graphical Decision Evidence</h3>
+                    <div style="height: 440px; position: relative;">
+                        <div id="y-axis-label"
+                            style="position: absolute; left: -40px; top: 50%; transform: rotate(-90deg); font-size: 0.7rem; font-weight: 800; color: var(--accent-primary); text-transform: uppercase;">
+                        </div>
+                        <canvas id="canvas"></canvas>
+                        <div id="x-axis-label"
+                            style="text-align: center; margin-top: 10px; font-size: 0.7rem; font-weight: 800; color: var(--accent-primary); text-transform: uppercase;">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="executive-data-view" class="card"
+                    style="display: none; flex-direction: column; gap: 20px; overflow: hidden;">
+                    <h3
+                        style="font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted); font-weight: 800; display: flex; align-items: center; gap: 10px;">
+                        <i data-lucide="list-checks" size="18"></i> Authority Strategic Records
+                    </h3>
+                    <div
+                        style="overflow-x: auto; max-height: 500px; border-radius: 12px; border: 1px solid var(--border);">
+                        <table id="data-table"
+                            style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+                        </table>
+                    </div>
+                </div>
+
+                <div id="admin-view" style="display: none; flex-direction: column; gap: 24px;">
+                    <div class="intel-grid">
+                        <div class="card"
+                            style="grid-column: span 3; background: rgba(15, 23, 42, 0.4); border: 1px solid var(--border);">
+                            <h3 class="label">🔍 Governance Observability Authority</h3>
+                            <div
+                                style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 12px;">
+                                <div class="intel-card"><span class="intel-t">Analysis Status</span>
+                                    <div id="admin-readiness" style="font-weight: 800; color: var(--accent-primary);">
+                                        SECURE</div>
+                                </div>
+                                <div class="intel-card"><span class="intel-t">Coverage</span>
+                                    <div id="admin-comp" style="font-weight: 800; color: var(--accent-primary);">0%
+                                    </div>
+                                </div>
+                                <div class="intel-card"><span class="intel-t">Enclave Health</span>
+                                    <div id="admin-pulse" style="font-weight: 800; color: var(--success);">ACTIVE</div>
+                                </div>
+                                <div class="intel-card"><span class="intel-t">Map Lock</span>
+                                    <div id="admin-axis" style="font-weight: 800; color: var(--accent-secondary);">
+                                        LOCKED</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card"
+                            style="background: rgba(15, 23, 42, 0.4); border: 1px dashed var(--accent-primary);">
+                            <h3 class="label">🔄 System Audit</h3>
+                            <button class="btn-activate" style="width: 100%;" onclick="AppCore.triggerAudit()">INITIATE
+                                MANUAL AUDIT</button>
+                        </div>
+                        <div class="card"
+                            style="background: rgba(15, 23, 42, 0.4); border: 1px dashed var(--accent-secondary);">
+                            <h3 class="label">📂 Workspace Audit</h3>
+                            <button class="btn-activate" style="width: 100%; background: var(--accent-secondary);"
+                                onclick="AppCore.auditPersistence()">VALIDATE DATA ENCLAVE</button>
+                        </div>
+                        <div class="card" style="background: rgba(15, 23, 42, 0.4); border: 1px dashed var(--danger);">
+                            <h3 class="label">🔒 Emergency Authority</h3>
+                            <button class="btn-activate" style="width: 100%; background: var(--danger);"
+                                onclick="AppCore.lockSystem()">PURGE AUTHORITY SESSION</button>
+                        </div>
+                    </div>
+                    <div id="storage-details" class="terminal"
+                        style="display: none; border-color: var(--accent-secondary);"></div>
+                    <h3 class="label">📜 Governance Trace Log</h3>
+                    <div class="terminal" id="term"></div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div>AUTHORITY: BI-STRATEGIC-GOLD | LOCATION: INDIA-HQ | ENCLAVE: v22.0</div>
+            <div id="status-chip" style="display: flex; align-items: center; gap: 8px;">
+                <span id="sync-dot"
+                    style="width: 8px; height: 8px; background: var(--text-muted); border-radius: 50%;"></span>
+                <span id="sync-text">SYSTEM_AUTHORITY_READY</span>
+            </div>
+        </footer>
+
+        <div id="loader">
+            <div class="spin"></div>
+            <p style="margin-top: 18px; font-weight: 700; color: white;">ANALYSIS RUNNING...</p>
+        </div>
+    </main>
+
+    <!-- JS Modular Engine -->
+    <script src="persistence.engine.js"></script>
+    <script src="data.engine.js"></script>
+    <script src="reasoning.engine.js"></script>
+    <script src="ui.renderer.js"></script>
+    <script src="admin.console.js"></script>
+    <script src="app.core.js"></script>
+</body>
+
+</html>
